@@ -11,7 +11,10 @@ ANIM_SPEED: integer = 10;
 var
 ch: char;
 state: integer;
-draw: boolean;
+titledraw, gotbox: boolean;
+currentspeed: integer;
+boxpointer: pointer;
+boxsize: word; 
 
 procedure playbgsound1;
 begin
@@ -41,7 +44,10 @@ begin
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
-     draw := true;
+     currentspeed := 500;
+     gotbox := false;
+     titledraw := true;
+     setbkcolor(black);
 
      if gd <> grok then
      begin
@@ -53,9 +59,10 @@ end;
 procedure title;
 
 begin
-     if draw then
+
+     if titledraw then
      begin
-     setbkcolor(black);
+     {draw once}
      setcolor(lightcyan);
 
      rectangle(0, 0, MAX_WIDTH - 1, MAX_HEIGHT - 1);
@@ -72,23 +79,38 @@ begin
      outtextxy(103, 72, 'Larong Ahas');
      settextstyle(0, 0, 1);
      outtextxy(240, 125, 'PRESS ENTER TO START');
-
-     draw := false;
+     titledraw := false;
      end;
+
 end;
 
 procedure game;
 begin
+
+     if not gotbox then
+     begin
+     setcolor(brown);
+     rectangle(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21);
+     setfillstyle(solidfill, blue);
+     floodfill(36, 36, brown);
+     boxsize := imagesize(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21);
+     getmem(boxpointer, boxsize);
+     getimage(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21, boxpointer^);
+     gotbox := true;
+     end
+     else
+     begin
+     putimage(35, 20, boxpointer^, 0);
+     end;
+
 end;
 
 begin
-     init;
      playbgsound1;
+     init;
      {main loop}
      while true do
      begin
-
-           if draw then cleardevice;
 
            case state of
                0:
@@ -111,20 +133,21 @@ begin
                begin
                     if state=0 then
                     begin
-                         state := 1;
-                         draw := true;
-                         stopsound;
+                         cleardevice;
                          playbgsound2;
-                         setbkcolor(blue);
+                         state := 1;
+                         stopsound;
+                         titledraw := true;
                     end;
                end;
 
                if ord(ch)=27 then break;
           end;
 
-          delay(ANIM_SPEED);
+          delay(ANIM_SPEED + currentspeed);
      end;
      {end of main loop}
+     freemem(boxpointer, boxsize);
      stopsound;
      closegraph;
 end.
