@@ -55,6 +55,7 @@ procedure title;
 begin
      if draw then
      begin
+     setbkcolor(black);
      setcolor(lightcyan);
 
      rectangle(0, 0, MAX_WIDTH - 1, MAX_HEIGHT - 1);
@@ -114,6 +115,7 @@ begin
                          draw := true;
                          stopsound;
                          playbgsound2;
+                         setbkcolor(blue);
                     end;
                end;
 
