@@ -6,11 +6,12 @@ const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
 BOX_SIZE: integer = 5;
-ANIM_SPEED: integer = 1000;
+ANIM_SPEED: integer = 10;
 
 var
 ch: char;
 state: integer;
+draw: boolean;
 
 procedure playbgsound1;
 begin
@@ -40,6 +41,7 @@ begin
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
+     draw := true;
 
      if gd <> grok then
      begin
@@ -49,42 +51,33 @@ begin
 end;
 
 procedure title;
-var 
-currentx, currenty, currentx2, currenty2, n1, n2, tempx, tempy: integer;
-other: boolean;
+
 begin
-     currentx := 0;
-     currentx2 := 0;
-     currenty := 0;
-     currenty2 := 0;
-     other := false;
-
-     setcolor(lightcyan);
-     for n1 := 1 to 5 do
+     if draw then
      begin
-          tempy := currenty + 40;
+     setcolor(lightcyan);
 
-          if n1=5 then
-          begin
-               tempy := tempy - 1;
-          end;
+     rectangle(0, 0, MAX_WIDTH - 1, MAX_HEIGHT - 1);
+     setfillstyle(xhatchfill, red);
+     floodfill(1, 1, lightcyan);
 
-          for n2 := 1 to 16 do
-          begin
-               tempx := currentx + 40;
+     setcolor(white);
+     rectangle(50, 50, MAX_WIDTH - 51, MAX_HEIGHT - 51);
+     setfillstyle(solidfill, green);
+     floodfill(51, 51, white);
 
-               if n2=16 then
-               begin
-                    tempx := tempx - 1;
-               end;
+     setcolor(black);
+     settextstyle(0, 0, 5);
+     outtextxy(103, 72, 'Larong Ahas');
+     settextstyle(0, 0, 1);
+     outtextxy(240, 125, 'PRESS ENTER TO START');
 
-               rectangle(currentx, currenty, tempx, tempy);
-               currentx := tempx;
-          end;
-          currentx := 0;
-          currenty := tempy;
+     draw := false;
      end;
+end;
 
+procedure game;
+begin
 end;
 
 begin
@@ -94,7 +87,7 @@ begin
      while true do
      begin
 
-           cleardevice;
+           if draw then cleardevice;
 
            case state of
                0:
@@ -105,12 +98,24 @@ begin
                1:
                begin
                { main game }
+               game;
                end;
            end;
 
           if keypressed then
           begin
                ch := readkey;
+
+               if ord(ch)=13 then
+               begin
+                    if state=0 then
+                    begin
+                         state := 1;
+                         draw := true;
+                         stopsound;
+                         playbgsound2;
+                    end;
+               end;
 
                if ord(ch)=27 then break;
           end;
