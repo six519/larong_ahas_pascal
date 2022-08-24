@@ -7,14 +7,21 @@ MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
 BOX_SIZE: integer = 5;
 ANIM_SPEED: integer = 10;
+START_X: integer = 35;
+START_Y: integer = 20;
+END_X: integer = 640 - 36;
+END_Y: integer = 200 - 21;
 
 var
 ch: char;
-state: integer;
-titledraw, gotbox: boolean;
+state, main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
+last_part_x, last_part_y, last_part_direction: integer;
+titledraw, gotbox, is_ok: boolean;
 currentspeed: integer;
 boxpointer: pointer;
-boxsize: word; 
+boxsize: word;
+parts_x, parts_y, parts_direction, temp_parts_x, temp_parts_y, temp_parts_direction: array[0..29] of integer; 
+food_x, food_y: array[0..19] of integer;
 
 procedure playbgsound1;
 begin
@@ -89,18 +96,22 @@ begin
 
      if not gotbox then
      begin
-     setcolor(brown);
-     rectangle(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21);
-     setfillstyle(solidfill, blue);
-     floodfill(36, 36, brown);
-     boxsize := imagesize(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21);
-     getmem(boxpointer, boxsize);
-     getimage(35, 20, MAX_WIDTH - 36, MAX_HEIGHT - 21, boxpointer^);
-     gotbox := true;
+
+          main_x := 100;
+          main_y := 100;
+
+          setcolor(brown);
+          rectangle(START_X, START_Y, END_X, END_Y);
+          setfillstyle(solidfill, blue);
+          floodfill(36, 36, brown);
+          boxsize := imagesize(START_X, START_Y, END_X, END_Y);
+          getmem(boxpointer, boxsize);
+          getimage(START_X, START_Y, END_X, END_Y, boxpointer^);
+          gotbox := true;
      end
      else
      begin
-     putimage(35, 20, boxpointer^, 0);
+          putimage(START_X, START_Y, boxpointer^, 0);
      end;
 
 end;
