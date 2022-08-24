@@ -14,12 +14,13 @@ END_Y: integer = 200 - 21;
 
 var
 ch: char;
-n, state, main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
+main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
+n, n2, state, temp_x, temp_y : integer;
 last_part_x, last_part_y, last_part_direction: integer;
 titledraw, gotbox, is_ok: boolean;
 currentspeed: integer;
-boxpointer: pointer;
-boxsize: word;
+boxpointer, bodypointer: pointer;
+boxsize, bodysize: word;
 parts_x, parts_y, parts_direction, temp_parts_x, temp_parts_y, temp_parts_direction: array[0..29] of integer; 
 food_x, food_y: array[0..19] of integer;
 
@@ -135,18 +136,45 @@ begin
                food_y[n] := 0;
           end;
 
+          {init blue blox}
           setcolor(brown);
           rectangle(START_X, START_Y, END_X, END_Y);
           setfillstyle(solidfill, blue);
-          floodfill(36, 36, brown);
+          floodfill(START_X + 1, START_X + 1, brown);
           boxsize := imagesize(START_X, START_Y, END_X, END_Y);
           getmem(boxpointer, boxsize);
           getimage(START_X, START_Y, END_X, END_Y, boxpointer^);
+
+          {init snake body}
+          temp_x := START_X + main_x;
+          temp_y := START_Y + main_y;
+          setcolor(lightgreen);
+          for n := 1 to BOX_SIZE do
+          begin
+               temp_x := START_X + main_x;
+               for n2 := 1 to BOX_SIZE do
+               begin
+
+                    if (n2 = 1) or (n = 1) or (n = BOX_SIZE) or (n2 = BOX_SIZE) then 
+                    putpixel(temp_x, temp_y, cyan) 
+                    else 
+                    putpixel(temp_x, temp_y, lightgreen);
+
+                    temp_x := temp_x + 1;
+               end;
+               temp_y := temp_y + 1;
+          end;
+
+          bodysize := imagesize(main_x, main_y, main_x + BOX_SIZE, main_y + BOX_SIZE);
+          getmem(bodypointer, bodysize);
+          getimage(main_x, main_y, main_x + BOX_SIZE, main_y + BOX_SIZE, bodypointer^);
+
           gotbox := true;
      end
      else
      begin
-          putimage(START_X, START_Y, boxpointer^, 0);
+          {putimage(START_X, START_Y, boxpointer^, 0);}
+          putimage(main_x, main_y, bodypointer^, 0);
      end;
 
 end;
@@ -194,6 +222,7 @@ begin
      end;
      {end of main loop}
      freemem(boxpointer, boxsize);
+     freemem(bodypointer, bodysize);
      stopsound;
      closegraph;
 end.
