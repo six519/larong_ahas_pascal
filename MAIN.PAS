@@ -51,7 +51,7 @@ begin
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
-     currentspeed := 800;
+     currentspeed := 600;
      gotbox := false;
      titledraw := true;
      setbkcolor(black);
@@ -185,7 +185,24 @@ begin
           
           {end of double buffering}
 
-          main_x := main_x + BOX_SIZE;
+           case current_direction of
+               0:
+               begin
+                    main_y := main_y + BOX_SIZE;
+               end;
+               1:
+               begin
+                    main_x := main_x - BOX_SIZE;
+               end;
+               2:
+               begin
+                    main_y := main_y - BOX_SIZE;
+               end;
+               3:
+               begin
+                    main_x := main_x + BOX_SIZE;
+               end;
+           end;
      end;
 
 end;
@@ -197,24 +214,34 @@ begin
      while true do
      begin
 
-           case state of
-               0:
-               begin
-               { title }
-               title;
-               end;
-               1:
-               begin
-               { main game }
-               game;
-               end;
-           end;
-
           if keypressed then
           begin
                ch := readkey;
 
-               if ord(ch)=13 then
+               if state=1 then
+               begin
+                    if ch='s' then
+                    begin
+                         if current_direction <> 2 then current_direction := 0;
+                    end;
+
+                    if ch='a' then
+                    begin
+                         if current_direction <> 3 then current_direction := 1;
+                    end;
+
+                    if ch='w' then
+                    begin
+                         if current_direction <> 0 then current_direction := 2;
+                    end;
+
+                    if ch='d' then
+                    begin
+                         if current_direction <> 1 then current_direction := 3;
+                    end;
+               end;
+
+               if ch=#13 then
                begin
                     if state=0 then
                     begin
@@ -226,7 +253,22 @@ begin
                     end;
                end;
 
-               if ord(ch)=27 then break;
+               if ch=#27 then break;
+
+               while keypressed do readkey; { flush keyboard buffer }
+          end;
+
+          case state of
+          0:
+          begin
+          { title }
+          title;
+          end;
+          1:
+          begin
+          { main game }
+          game;
+          end;
           end;
 
           delay(currentspeed);
