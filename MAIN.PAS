@@ -37,6 +37,20 @@ begin
      startsound(@BGSound2, 100, 1);
 end;
 
+procedure playsoundeffect1;
+begin
+     getintvec($1c, int1csave);
+     setintvec($1c, new1cint);
+     startsound(@PhaserSound, 1, 1)
+end;
+
+procedure playsoundeffect2;
+begin
+     getintvec($1c, int1csave);
+     setintvec($1c, new1cint);
+     startsound(@WhistleSound, 1, 1)
+end;
+
 procedure stopsound;
 begin
      setintvec($1c, int1csave);
@@ -196,6 +210,7 @@ begin
                for n3 := 0 to parts_count - 1 do
                begin
                     putimage(parts_x[n3], parts_y[n3], bodypointer^, 0);
+                    playsoundeffect1;
                end;
 
                n2 := n2 - 1;
@@ -282,7 +297,7 @@ begin
                     if state=0 then
                     begin
                          cleardevice;
-                         playbgsound2;
+                         {playbgsound2;}
                          state := 1;
                          stopsound;
                          titledraw := true;
