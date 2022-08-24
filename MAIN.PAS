@@ -14,7 +14,7 @@ END_Y: integer = 200 - 21;
 var
 ch: char;
 main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
-n, n2, state, temp_x, temp_y : integer;
+n, n2, n3, state, temp_x, temp_y : integer;
 last_part_x, last_part_y, last_part_direction: integer;
 titledraw, gotbox, is_ok: boolean;
 currentspeed: integer;
@@ -167,22 +167,37 @@ begin
           getmem(bodypointer, bodysize);
           getimage(main_x + START_X, main_y + START_Y, main_x + BOX_SIZE + START_X, main_y + BOX_SIZE + START_Y, bodypointer^);
 
+          { init parts }
+          temp_x := main_x + START_X;
+          temp_y := main_y + START_Y;
+
+          for n := 0 to parts_count do
+          begin
+               parts_x[n] := temp_x;
+               parts_y[n] := temp_y;
+               parts_direction[n] := current_direction;
+               temp_y := temp_y + BOX_SIZE;
+          end;
+
           gotbox := true;
      end
      else
      begin
+          is_ok := false;
           {start of double buffering}
-          
-          setvisualpage(0);
-          setactivepage(1);
-          putimage(START_X, START_Y, boxpointer^, 0);
-          putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);
-          
-          setvisualpage(1);
-          setactivepage(0);
-          putimage(START_X, START_Y, boxpointer^, 0);
-          putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);
-          
+          n2 := 1;
+
+          for n := 0 to 1 do
+          begin
+               setvisualpage(n);
+               setactivepage(n2);
+               putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
+
+               {putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);}
+
+
+               n2 := n2 - 1;
+          end;          
           {end of double buffering}
 
            case current_direction of
