@@ -5,7 +5,7 @@ uses crt, graph, bgsound, dos;
 const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
-BOX_SIZE: integer = 5;
+BOX_SIZE: integer = 8;
 START_X: integer = 35;
 START_Y: integer = 20;
 END_X: integer = 640 - 36;
@@ -98,7 +98,7 @@ begin
 
           main_x := 100 + START_X;
           main_y := 100 + START_Y;
-          parts_count := 5;
+          parts_count := 4;
           is_ok := false;
           lowerx1 := 0;
           lowery1 := 0;
@@ -193,8 +193,10 @@ begin
                setactivepage(n2);
                putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
 
-               {putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);}
-
+               for n3 := 0 to parts_count - 1 do
+               begin
+                    putimage(parts_x[n3], parts_y[n3], bodypointer^, 0);
+               end;
 
                n2 := n2 - 1;
           end;          
@@ -218,6 +220,25 @@ begin
                     main_x := main_x + BOX_SIZE;
                end;
            end;
+
+          for n3 := 0 to parts_count - 1 do
+          begin
+               temp_parts_x[n3] := parts_x[n3];
+               temp_parts_y[n3] := parts_y[n3];
+               temp_parts_direction[n3] := parts_direction[n3];
+          end;
+
+          parts_x[0] := main_x + START_X;
+          parts_y[0] := main_y + START_Y;
+          parts_direction[0] := current_direction;
+
+          for n3 := 0 to parts_count - 1 do
+          begin
+               parts_x[n3+1] := temp_parts_x[n3];
+               parts_y[n3+1] := temp_parts_y[n3];
+               parts_direction[n3+1] := temp_parts_direction[n3];
+          end;
+
      end;
 
 end;
