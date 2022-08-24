@@ -14,7 +14,7 @@ END_Y: integer = 200 - 21;
 
 var
 ch: char;
-state, main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
+n, state, main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_direction, faster, current_food : integer;
 last_part_x, last_part_y, last_part_direction: integer;
 titledraw, gotbox, is_ok: boolean;
 currentspeed: integer;
@@ -97,8 +97,43 @@ begin
      if not gotbox then
      begin
 
-          main_x := 100;
-          main_y := 100;
+          main_x := 100 + START_X;
+          main_y := 100 + START_Y;
+          parts_count := 5;
+          is_ok := false;
+          lowerx1 := 0;
+          lowery1 := 0;
+          lowerx2 := 0;
+          lowery2 := 0;
+          current_direction := 2;
+          {
+               0 - down
+               1 - left
+               2 - up
+               3 - right
+          }
+
+          for n := 0 to 29 do
+          begin
+               parts_x[n] := 0;
+               parts_y[n] := 0;
+               parts_direction[n] := 0;
+               temp_parts_x[n] := 0;
+               temp_parts_y[n] := 0;
+               temp_parts_direction[n] := 0;
+          end;
+
+          last_part_x := 0;
+          last_part_y := 0;
+          last_part_direction := 0;
+
+          current_food := 0;
+
+          for n := 0 to 19 do
+          begin
+               food_x[n] := 0;
+               food_y[n] := 0;
+          end;
 
           setcolor(brown);
           rectangle(START_X, START_Y, END_X, END_Y);
