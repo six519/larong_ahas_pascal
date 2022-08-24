@@ -6,7 +6,6 @@ const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
 BOX_SIZE: integer = 5;
-ANIM_SPEED: integer = 10;
 START_X: integer = 35;
 START_Y: integer = 20;
 END_X: integer = 640 - 36;
@@ -47,12 +46,12 @@ end;
 procedure init;
 var gd, gm : integer;
 begin
-     gd := EGA64;
-     gm := EGA64Lo;
+     gd := EGA;
+     gm := EGALo;
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
-     currentspeed := 500;
+     currentspeed := 800;
      gotbox := false;
      titledraw := true;
      setbkcolor(black);
@@ -94,7 +93,6 @@ end;
 
 procedure game;
 begin
-
      if not gotbox then
      begin
 
@@ -165,16 +163,29 @@ begin
                temp_y := temp_y + 1;
           end;
 
-          bodysize := imagesize(main_x, main_y, main_x + BOX_SIZE, main_y + BOX_SIZE);
+          bodysize := imagesize(main_x + START_X, main_y + START_Y, main_x + BOX_SIZE + START_X, main_y + BOX_SIZE + START_Y);
           getmem(bodypointer, bodysize);
-          getimage(main_x, main_y, main_x + BOX_SIZE, main_y + BOX_SIZE, bodypointer^);
+          getimage(main_x + START_X, main_y + START_Y, main_x + BOX_SIZE + START_X, main_y + BOX_SIZE + START_Y, bodypointer^);
 
           gotbox := true;
      end
      else
      begin
-          {putimage(START_X, START_Y, boxpointer^, 0);}
-          putimage(main_x, main_y, bodypointer^, 0);
+          {start of double buffering}
+          
+          setvisualpage(0);
+          setactivepage(1);
+          putimage(START_X, START_Y, boxpointer^, 0);
+          putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);
+          
+          setvisualpage(1);
+          setactivepage(0);
+          putimage(START_X, START_Y, boxpointer^, 0);
+          putimage(main_x + START_X, main_y + START_Y, bodypointer^, 0);
+          
+          {end of double buffering}
+
+          main_x := main_x + BOX_SIZE;
      end;
 
 end;
@@ -218,7 +229,7 @@ begin
                if ord(ch)=27 then break;
           end;
 
-          delay(ANIM_SPEED + currentspeed);
+          delay(currentspeed);
      end;
      {end of main loop}
      freemem(boxpointer, boxsize);
