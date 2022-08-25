@@ -318,6 +318,53 @@ begin
           ((main_x + START_X) < END_X) and ((main_x + START_X + BOX_SIZE) > START_X) then
           begin
                is_ok := true;
+
+               { check collision with parts below }
+
+               { check collision with food }
+               if is_ok then
+               begin
+                    lowerx1 := food_x[current_food] + BOX_SIZE - 1;
+                    lowery1 := food_y[current_food] + BOX_SIZE - 1;
+                    lowerx2 := parts_x[0] + BOX_SIZE - 1;
+                    lowery2 := parts_y[0] + BOX_SIZE - 1;
+
+                    if not((lowerx1 < parts_x[0]) or (food_x[current_food] > lowerx2) 
+                    or (lowery1 < parts_y[0]) or (food_y[current_food] > lowery2)) then
+                    begin
+                         current_food := current_food + 1;
+                         last_part_x := parts_x[parts_count - 1];
+                         last_part_y := parts_y[parts_count - 1];
+                         last_part_direction := parts_direction[parts_count - 1];
+
+                         case last_part_direction of
+                         0:
+                         begin
+                         last_part_y := last_part_y + BOX_SIZE;
+                         end;
+                         1:
+                         begin
+                         last_part_x := last_part_x - BOX_SIZE;
+                         end;
+                         2:
+                         begin
+                         last_part_y := last_part_y - BOX_SIZE;
+                         end;
+                         3:
+                         begin
+                         last_part_x := last_part_x + BOX_SIZE;
+                         end;
+                         end;
+
+                         parts_x[parts_count] := last_part_x;
+                         parts_y[parts_count] := last_part_y;
+                         parts_direction[parts_count] := last_part_direction;
+                         parts_count := parts_count + 1;
+                         stopsound;
+                         playsoundeffect2;
+                         score := score + 5;
+                    end;
+               end;
           end;
 
 
