@@ -212,7 +212,13 @@ begin
                setvisualpage(n);
                setactivepage(n2);
 
-               putimage(38, 8, blankpointer^, 0);
+               putimage(38, 9, blankpointer^, 0);
+
+
+               setcolor(green);
+               settextstyle(1, 0, 1);
+               outtextxy(250, 0, 'Larong Ahas');
+
 
                setcolor(white);
                settextstyle(0, 0, 1);
