@@ -17,11 +17,12 @@ main_x, main_y, parts_count, lowerx1, lowery1, lowerx2, lowery2, current_directi
 n, n2, n3, state, temp_x, temp_y : integer;
 last_part_x, last_part_y, last_part_direction: integer;
 titledraw, gotbox, is_ok: boolean;
-currentspeed: integer;
-boxpointer, bodypointer: pointer;
-boxsize, bodysize: word;
+currentspeed, score: integer;
+boxpointer, bodypointer, blankpointer: pointer;
+boxsize, bodysize, blanksize: word;
 parts_x, parts_y, parts_direction, temp_parts_x, temp_parts_y, temp_parts_direction: array[0..29] of integer; 
 food_x, food_y: array[0..19] of integer;
+score_string: string;
 
 procedure playbgsound1;
 begin
@@ -109,7 +110,7 @@ procedure game;
 begin
      if not gotbox then
      begin
-
+          score := 0;
           main_x := 100 + START_X;
           main_y := 100 + START_Y;
           parts_count := 4;
@@ -147,6 +148,11 @@ begin
                food_x[n] := 0;
                food_y[n] := 0;
           end;
+
+          {init blank area}
+          blanksize := imagesize(38, 8, 200, 200);
+          getmem(blankpointer, blanksize);
+          getimage(38, 8, 200, 200, blankpointer^);
 
           {init blue blox}
           setcolor(brown);
@@ -205,6 +211,14 @@ begin
           begin
                setvisualpage(n);
                setactivepage(n2);
+
+               putimage(38, 8, blankpointer^, 0);
+
+               setcolor(white);
+               settextstyle(0, 0, 1);
+               str(score, score_string);
+               outtextxy(38, 8, 'Score: ' + score_string);
+
                putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
 
                for n3 := 0 to parts_count - 1 do
@@ -327,6 +341,7 @@ begin
      {end of main loop}
      freemem(boxpointer, boxsize);
      freemem(bodypointer, bodysize);
+     freemem(blankpointer, blanksize);
      stopsound;
      closegraph;
 end.
