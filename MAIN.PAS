@@ -332,6 +332,9 @@ begin
                     if not((lowerx1 < parts_x[0]) or (food_x[current_food] > lowerx2) 
                     or (lowery1 < parts_y[0]) or (food_y[current_food] > lowery2)) then
                     begin
+
+                         if current_food<>19 then
+                         begin
                          current_food := current_food + 1;
                          last_part_x := parts_x[parts_count - 1];
                          last_part_y := parts_y[parts_count - 1];
@@ -362,7 +365,19 @@ begin
                          parts_count := parts_count + 1;
                          stopsound;
                          playsoundeffect2;
-                         score := score + 5;
+                         score := score + 20;
+                         currentspeed := currentspeed - 10;
+                         end
+                         else
+                         begin
+                         state := 3;
+                         setactivepage(4);
+                         playbgsound2;
+                         setcolor(green);
+                         settextstyle(0, 0, 5);
+                         outtextxy(170, 80, 'YOU WIN');
+                         setvisualpage(4);
+                         end;
                     end;
                end;
           end;
@@ -426,8 +441,9 @@ begin
                          state := 1;
                          stopsound;
                     end
-                    else if state=2 then
+                    else if (state=2) or (state=3) then
                     begin
+                         cleardevice;
                          stopsound;
                          setactivepage(0);
                          cleardevice;
