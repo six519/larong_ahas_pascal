@@ -18,8 +18,8 @@ n, n2, n3, state, temp_x, temp_y : integer;
 last_part_x, last_part_y, last_part_direction: integer;
 titledraw, gotbox, is_ok: boolean;
 currentspeed, score: integer;
-boxpointer, bodypointer, blankpointer: pointer;
-boxsize, bodysize, blanksize: word;
+boxpointer, bodypointer, blankpointer, foodpointer: pointer;
+boxsize, bodysize, blanksize, foodsize: word;
 parts_x, parts_y, parts_direction, temp_parts_x, temp_parts_y, temp_parts_direction: array[0..29] of integer; 
 food_x, food_y: array[0..19] of integer;
 score_string: string;
@@ -118,8 +118,8 @@ begin
      begin
           setactivepage(0);
           score := 0;
-          main_x := 100 + START_X;
-          main_y := 80 + START_Y;
+          main_x := START_X;
+          main_y := START_Y + 10;
           parts_count := 3;
           is_ok := false;
           lowerx1 := 0;
@@ -152,8 +152,10 @@ begin
 
           for n := 0 to 19 do
           begin
-               food_x[n] := 0;
-               food_y[n] := 0;
+               temp_x := random(58 - 1 + 1) + 1;
+               temp_y := random(17 - 1 + 1) + 1;
+               food_x[n] := (temp_x * BOX_SIZE) + START_X;
+               food_y[n] := (temp_y * BOX_SIZE) + START_Y;
           end;
 
           {init blank area}
@@ -194,6 +196,34 @@ begin
           getmem(bodypointer, bodysize);
           getimage(main_x + START_X, main_y + START_Y, main_x + BOX_SIZE + START_X, main_y + BOX_SIZE + START_Y, bodypointer^);
 
+          { init food }
+          temp_x := food_x[current_food];
+          temp_y := food_y[current_food];
+          setcolor(red);
+          for n := 1 to BOX_SIZE do
+          begin
+               temp_x := food_x[current_food];
+               for n2 := 1 to BOX_SIZE do
+               begin
+
+                    if (n2 = 1) or (n = 1) or (n = BOX_SIZE) or (n2 = BOX_SIZE) then 
+                    putpixel(temp_x, temp_y, yellow) 
+                    else 
+                    putpixel(temp_x, temp_y, red);
+
+                    temp_x := temp_x + 1;
+               end;
+               temp_y := temp_y + 1;
+          end;
+
+          foodsize := imagesize(food_x[current_food],
+          food_y[current_food], food_x[current_food] + BOX_SIZE, 
+          food_y[current_food] + BOX_SIZE);
+          getmem(foodpointer, foodsize);
+          getimage(food_x[current_food],food_y[current_food], 
+          food_x[current_food] + BOX_SIZE, 
+          food_y[current_food] + BOX_SIZE, foodpointer^);
+
           { init parts }
           temp_x := main_x + START_X;
           temp_y := main_y + START_Y;
@@ -233,6 +263,8 @@ begin
                outtextxy(38, 10, 'Score: ' + score_string);
 
                putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
+
+               putimage(food_x[current_food], food_y[current_food], foodpointer^, 0);
 
                for n3 := 0 to parts_count - 1 do
                begin
@@ -304,6 +336,7 @@ begin
 end;
 
 begin
+     randomize;
      playbgsound1;
      init;
      {main loop}
@@ -389,6 +422,7 @@ begin
      freemem(boxpointer, boxsize);
      freemem(bodypointer, bodysize);
      freemem(blankpointer, blanksize);
+     freemem(foodpointer, foodsize);
      stopsound;
      closegraph;
 end.
