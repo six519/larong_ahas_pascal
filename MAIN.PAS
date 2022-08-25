@@ -5,7 +5,7 @@ uses crt, graph, bgsound, dos;
 const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
-BOX_SIZE: integer = 8;
+BOX_SIZE: integer = 15;
 START_X: integer = 35;
 START_Y: integer = 20;
 END_X: integer = 640 - 36;
@@ -58,6 +58,10 @@ begin
      nosound;
 end;
 
+procedure gameover;
+begin
+end;
+
 procedure init;
 var gd, gm : integer;
 begin
@@ -66,7 +70,7 @@ begin
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
-     currentspeed := 600;
+     currentspeed := 300;
      gotbox := false;
      titledraw := true;
      setbkcolor(black);
@@ -84,6 +88,8 @@ begin
 
      if titledraw then
      begin
+     setactivepage(3);
+     setvisualpage(3);
      {draw once}
      setcolor(lightcyan);
 
@@ -110,10 +116,11 @@ procedure game;
 begin
      if not gotbox then
      begin
+          setactivepage(0);
           score := 0;
           main_x := 100 + START_X;
-          main_y := 100 + START_Y;
-          parts_count := 4;
+          main_y := 80 + START_Y;
+          parts_count := 3;
           is_ok := false;
           lowerx1 := 0;
           lowery1 := 0;
@@ -223,7 +230,7 @@ begin
                setcolor(white);
                settextstyle(0, 0, 1);
                str(score, score_string);
-               outtextxy(38, 8, 'Score: ' + score_string);
+               outtextxy(38, 10, 'Score: ' + score_string);
 
                putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
 
@@ -274,6 +281,19 @@ begin
                parts_direction[n3+1] := temp_parts_direction[n3];
           end;
 
+          if ((main_y + START_Y + BOX_SIZE) > START_Y) and 
+          ((main_y + START_Y) < END_Y) and 
+          ((main_x + START_X) < END_X) and ((main_x + START_X + BOX_SIZE) > START_X) then
+          begin
+               is_ok := true;
+          end;
+
+
+          if not is_ok then
+          begin
+               state:=2;
+               playbgsound2;
+          end;
      end;
 
 end;
@@ -316,11 +336,23 @@ begin
                begin
                     if state=0 then
                     begin
-                         cleardevice;
+                         {cleardevice;}
                          {playbgsound2;}
                          state := 1;
                          stopsound;
-                         titledraw := true;
+                    end
+                    else if state=2 then
+                    begin
+                         stopsound;
+                         setactivepage(0);
+                         cleardevice;
+                         setactivepage(1);
+                         cleardevice;
+                         setvisualpage(0);
+                         state := 0;
+                         playbgsound1;
+                         gotbox := false;
+                         setvisualpage(3);
                     end;
                end;
 
@@ -339,6 +371,10 @@ begin
           begin
           { main game }
           game;
+          end;
+          2:
+          begin
+          gameover;
           end;
           end;
 
