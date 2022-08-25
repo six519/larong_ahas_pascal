@@ -70,7 +70,7 @@ begin
      initgraph(gd, gm, '.\BGI');
      gd := graphresult;
      state := 0;
-     currentspeed := 300;
+     currentspeed := 200;
      gotbox := false;
      titledraw := true;
      setbkcolor(black);
