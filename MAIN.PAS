@@ -6,10 +6,12 @@ const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
 BOX_SIZE: integer = 10;
-START_X: integer = 30;
-START_Y: integer = 20;
-END_X: integer = 640 - 30;
-END_Y: integer = 200 - 10;
+START_X: integer = 120;
+START_Y: integer = 40;
+END_X: integer = 640 - 120;
+END_Y: integer = 200 - 40;
+SCORE_X: integer = 123;
+SCORE_Y: integer = 30;
 
 var
 ch: char;
@@ -152,16 +154,16 @@ begin
 
           for n := 0 to 19 do
           begin
-               temp_x := random(58 - 1 + 1) + 1;
-               temp_y := random(17 - 1 + 1) + 1;
+               temp_x := random(((END_X - START_X - BOX_SIZE) div BOX_SIZE) - 1 + 1) + 1;
+               temp_y := random(((END_Y - START_Y - BOX_SIZE) div BOX_SIZE) - 1 + 1) + 1;
                food_x[n] := (temp_x * BOX_SIZE) + START_X;
                food_y[n] := (temp_y * BOX_SIZE) + START_Y;
           end;
 
           {init blank area}
-          blanksize := imagesize(38, 8, 200, 200);
+          blanksize := imagesize(SCORE_X, SCORE_Y, SCORE_X + 200, SCORE_Y + 200);
           getmem(blankpointer, blanksize);
-          getimage(38, 8, 200, 200, blankpointer^);
+          getimage(SCORE_X, SCORE_Y, SCORE_X + 200, SCORE_Y + 200, blankpointer^);
 
           {init blue blox}
           setcolor(brown);
@@ -209,7 +211,7 @@ begin
                     if (n2 = 1) or (n = 1) or (n = BOX_SIZE) or (n2 = BOX_SIZE) then 
                     putpixel(temp_x, temp_y, yellow) 
                     else 
-                    putpixel(temp_x, temp_y, red);
+                    putpixel(temp_x, temp_y, brown);
 
                     temp_x := temp_x + 1;
                end;
@@ -249,18 +251,16 @@ begin
                setvisualpage(n);
                setactivepage(n2);
 
-               putimage(38, 9, blankpointer^, 0);
-
+               putimage(SCORE_X, SCORE_Y, blankpointer^, 0);
 
                setcolor(green);
                settextstyle(1, 0, 1);
-               outtextxy(250, 0, 'Larong Ahas');
-
+               outtextxy(262, 15, 'Larong Ahas');
 
                setcolor(white);
                settextstyle(0, 0, 1);
                str(score, score_string);
-               outtextxy(38, 10, 'Score: ' + score_string);
+               outtextxy(SCORE_X, SCORE_Y, 'Score: ' + score_string);
 
                putimage(START_X, START_Y, boxpointer^, 0); { always draw the box }
 
