@@ -291,8 +291,13 @@ begin
 
           if not is_ok then
           begin
+               setactivepage(4);
                state:=2;
                playbgsound2;
+               setcolor(red);
+               settextstyle(0, 0, 5);
+               outtextxy(145, 80, 'GAME OVER');
+               setvisualpage(4);
           end;
      end;
 
