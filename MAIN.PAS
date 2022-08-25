@@ -5,11 +5,11 @@ uses crt, graph, bgsound, dos;
 const
 MAX_WIDTH: integer = 640;
 MAX_HEIGHT: integer = 200;
-BOX_SIZE: integer = 15;
-START_X: integer = 35;
+BOX_SIZE: integer = 17;
+START_X: integer = 36;
 START_Y: integer = 20;
-END_X: integer = 640 - 36;
-END_Y: integer = 200 - 21;
+END_X: integer = 640 - 28;
+END_Y: integer = 200 - 13;
 
 var
 ch: char;
