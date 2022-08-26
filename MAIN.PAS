@@ -320,6 +320,22 @@ begin
                is_ok := true;
 
                { check collision with parts below }
+               for n := 0 to parts_count - 1 do
+               begin
+               if n>2 then
+               begin
+                    lowerx1 := parts_x[n] + BOX_SIZE - 1;
+                    lowery1 := parts_y[n] + BOX_SIZE - 1;
+                    lowerx2 := parts_x[0] + BOX_SIZE - 1;
+                    lowery2 := parts_y[0] + BOX_SIZE - 1;
+
+                    if not ((lowerx1 < parts_x[0]) or (parts_x[n] > lowerx2) 
+                    or (lowery1 < parts_y[0]) or (parts_y[n] > lowery2)) then
+                    begin
+                         is_ok := false;
+                    end;
+               end;
+               end;
 
                { check collision with food }
                if is_ok then
