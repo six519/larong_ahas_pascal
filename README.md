@@ -1,4 +1,4 @@
-# SDL Controller
+# Larong Ahas
 
 ![Game screenshot 1](turbo_000.png)
 
